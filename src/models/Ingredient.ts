@@ -16,6 +16,10 @@ export default interface Ingredient {
   measurement: Measurement
 }
 
+export function isIngredient(obj: unknown): obj is Ingredient {
+  return (<Ingredient>obj).name != undefined && (<Ingredient>obj).measurement != undefined;
+}
+
 interface Measurement {
   quantity: number,
   unit: string

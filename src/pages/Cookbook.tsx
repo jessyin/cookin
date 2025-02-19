@@ -17,22 +17,28 @@ export default function Cookbook() {
   }
 
   return (
-    <div className="flex flex-row max-w-1/2 mx-auto">
+    <div className="flex flex-row max-w-2/3 mx-auto">
       <div className="basis-1/5 bg-stone-300 rounded-lg p-4">
-        <TagFilter/>
+        <TagFilter />
         <div className="m-6" />
         <IngredientFilter />
       </div>
       <div className="basis-4/5 p-8">
         <div className="flex flex-row justify-between mb-2 items-center">
           <h1 className="text-stone-600">cookbook</h1>
-          { auth.user && <button className="full-btn-blue" onClick={openAddRecipeModal}>+ Add</button> }
+          {auth.user && (
+            <button className="full-btn-blue" onClick={openAddRecipeModal}>
+              + Add
+            </button>
+          )}
         </div>
         <div className="grid grid-cols-3 gap-3">
-          { recipes.map((recipe) => (<RecipeCard recipe={recipe} />))}
+          {recipes.map((recipe) => (
+            <RecipeCard recipe={recipe} />
+          ))}
         </div>
       </div>
-      { showModal && createPortal(<RecipeForm onClose={() => setShowModal(false)}/>, document.body)}
+      {showModal && createPortal(<RecipeForm onClose={() => setShowModal(false)} />, document.body)}
     </div>
   );
 }

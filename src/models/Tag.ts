@@ -4,3 +4,7 @@ export default class Tag {
     public color: string = ""
   ) {}
 }
+
+export function isTag(obj: unknown): obj is Tag {
+  return (<Tag>obj).name != undefined && (<Tag>obj).color != undefined;
+}

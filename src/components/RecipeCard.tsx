@@ -25,11 +25,11 @@ export default function RecipeCard(props: RecipeCardProps) {
       className="flex flex-col shadow rounded-md p-3 bg-white hover:animate-wiggle hover:shadow-tan-1 hover:shadow-md hover:cursor-pointer"
       onClick={onClick}
     >
-      <h2 className="text-center">{recipe?.name || ""}</h2>
+      <h2 className="text-center line-clamp-1">{recipe?.name || ""}</h2>
       {urlParts && <img className="" src={`${urlParts[0]}upload/ar_1.0,c_fill/${urlParts[1]}`} />}
       {!urlParts && (
         <div>
-          <PhotoIcon style="text-dark-gray/50"/>
+          <PhotoIcon style="text-dark-gray/50" />
         </div>
       )}
       <div className="flex flex-row flex-wrap">

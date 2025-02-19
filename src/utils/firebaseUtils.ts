@@ -17,6 +17,8 @@ import {
 } from "firebase/firestore";
 import { Ingredient, Recipe, RecipeMetadata, Tag } from "../models";
 import { RecipeContext } from "../app/contexts";
+import { isIngredient } from "../models/Ingredient";
+import { isTag } from "../models/Tag";
 
 // Converters ---------
 function convertTagsToObjectArray(tags: Set<Tag>) {
@@ -27,7 +29,9 @@ function convertTagsToObjectArray(tags: Set<Tag>) {
 
 function convertIngredientsToObjectArray(ingredients: Array<Ingredient>) {
   const plainIngredients = new Array<Ingredient>();
-  ingredients.forEach((ingredient) => plainIngredients.push({ name: ingredient.name, measurement: { ...ingredient.measurement }  }));
+  ingredients.forEach((ingredient) =>
+    plainIngredients.push({ name: ingredient.name, measurement: { ...ingredient.measurement } })
+  );
   return plainIngredients;
 }
 
@@ -36,13 +40,10 @@ function convertObjectArrayToTags(objs: unknown[] | undefined | null) {
   if (!objs) return tags;
 
   objs.forEach((obj) => {
-    if (obj instanceof Tag && obj?.name) tags.add(new Tag(obj.name.toString(), obj.color));
+    console.log(obj instanceof Tag);
+    if (isTag(obj) && obj.name != "") tags.add(new Tag(obj.name.toString(), obj.color));
   });
   return tags;
-}
-
-function isIngredient(obj: unknown): obj is Ingredient {
-  return (<Ingredient>obj).name != undefined && (<Ingredient>obj).measurement != undefined;
 }
 
 function convertObjectArrayToIngredients(objs: unknown[] | undefined | null) {
@@ -50,7 +51,7 @@ function convertObjectArrayToIngredients(objs: unknown[] | undefined | null) {
   if (!objs) return ingredients;
 
   objs.forEach((obj) => {
-    if (isIngredient(obj)) {
+    if (isIngredient(obj) && obj.name != "") {
       ingredients.push({
         name: obj.name,
         measurement: {
