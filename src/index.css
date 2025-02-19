@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+  --font-script: Great Vibes, cursive;
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+    
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+}
+
+@layer base {
+  div {
+    @apply text-black;
+  }
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg
+  }
+
+  a {
+    @apply cursor-pointer hover:underline
+  }
+  
+}
+
+@layer components {
+  .full-btn-blue {
+    @apply bg-blue-1 px-4 py-1 rounded-full text-white outline outline-transparent hover:outline-2 hover:outline-offset-2 hover:outline-blue-2 hover:bg-blue-2 active:bg-blue-dark-2 disabled:bg-dark-gray/30 disabled:pointer-events-none
+  }
+
+  .full-btn-red {
+    @apply bg-red-1 px-4 py-1 rounded-full text-white outline outline-transparent hover:outline-2 hover:outline-offset-2 hover:outline-red-2 hover:bg-red-2 active:bg-red-dark disabled:bg-dark-gray/30 disabled:pointer-events-none
+  }
+
+  .placeholder-btn-tan {
+    @apply border-2 border-tan-1 border-dashed text-tan-dark hover:bg-tan-1/50 hover:border-solid active:bg-tan-2
+  }
+
+  .input-txt {
+    @apply my-1 pt-2 px-2 border-b-2 rounded-md outline-none resize-y w-full border-light-gray hover:bg-light-gray/25 hover:focus-within:bg-blue-3/50 hover:focus-within:border-blue-dark/50 focus-within:bg-blue-3/50 focus-within:border-blue-dark/50
+  }
+
+  .input-trash {
+    @apply h-full mx-2 size-4 text-red-1 cursor-pointer hover:text-red-2 active:text-red-dark
+  }
+
+  .picker {
+    @apply my-1 me-1 border-2 rounded-full px-2 outline-none border-light-gray hover:bg-light-gray/30 focus:bg-blue-3/50 focus:border-blue-dark/50
+  }
+
+  .number-picker {
+    @apply my-1 ps-2 me-1 border-b-2 border-light-gray outline-none rounded-md [&::-webkit-outer-spin-button]:opacity-100 [&::-webkit-inner-spin-button]:opacity-100 hover:bg-light-gray/25 focus:bg-blue-3/50 focus:border-blue-dark/50
+  }
+
+  .paper {
+    @apply bg-white p-12 shadow-lg relative border-tan-dark/20 border-2 before:border-tan-dark/20 before:border-2 before:shadow-md before:right-3 before:top-0 before:rotate-1 before:bg-tan-1 before:w-full before:h-full before:absolute before:-z-10 after:-right-4 after:-top-1 after:-rotate-1 after:bg-tan-2 after:w-full after:h-full after:absolute after:-z-10 after:border-tan-dark/20 after:border-2 after:shadow-md
+  }
+}
