@@ -31,24 +31,32 @@ function convertIngredientsToObjectArray(ingredients: Array<Ingredient>) {
   return plainIngredients;
 }
 
-function convertObjectArrayToTags(objs) {
+function convertObjectArrayToTags(objs: unknown[] | undefined | null) {
   const tags = new Set<Tag>();
+  if (!objs) return tags;
+
   objs.forEach((obj) => {
-    if (obj.name) tags.add(new Tag(obj.name.toString(), obj.color));
+    if (obj instanceof Tag && obj?.name) tags.add(new Tag(obj.name.toString(), obj.color));
   });
   return tags;
 }
 
-function convertObjectArrayToIngredients(objs) {
+function isIngredient(obj: unknown): obj is Ingredient {
+  return (<Ingredient>obj).name != undefined && (<Ingredient>obj).measurement != undefined;
+}
+
+function convertObjectArrayToIngredients(objs: unknown[] | undefined | null) {
   const ingredients = new Array<Ingredient>();
+  if (!objs) return ingredients;
+
   objs.forEach((obj) => {
-    if (obj.name) {
+    if (isIngredient(obj)) {
       ingredients.push({
         name: obj.name,
         measurement: {
           quantity: obj.measurement.quantity,
-          unit: obj.measurement.unit
-        }
+          unit: obj.measurement.unit,
+        },
       });
     }
   });
