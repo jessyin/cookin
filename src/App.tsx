@@ -1,13 +1,12 @@
 import { ProvideAuth } from "./components";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import { Cookbook, ErrorPage, Home, FullRecipe } from "./pages";
 import { cookbookLoader, recipeLoader } from "./app/loaders";
 import Root from "./pages/Root";
 import ProvideRecipeContext from "./components/ProvideRecipeContext";
 
-
 export default function App() {
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: "/",
       element: <Root />,
@@ -28,7 +27,7 @@ export default function App() {
           element: <FullRecipe />,
           loader: recipeLoader,
         },
-      ]
+      ],
     },
   ]);
 
