@@ -4,12 +4,13 @@ import { Pill, PillList, TagCreator } from ".";
 import { RecipeContext } from "../app/contexts";
 
 type TagInputProps = {
-  selectedTags: Set<Tag>;
-  setSelectedTags: (tags: Set<Tag>) => void;
+  selectedTags: Set<string>;
+  setSelectedTags: (tags: Set<string>) => void;
 };
 
 export default function TagInput({ selectedTags, setSelectedTags }: TagInputProps) {
-  const { tags } = useContext(RecipeContext);
+  const { tags, setTags } = useContext(RecipeContext);
+
   const [query, setQuery] = useState("");
   const [autocomplete, setAutocomplete] = useState<Set<Tag>>(new Set());
   const [showCreator, setShowCreator] = useState<boolean>(false);
@@ -18,9 +19,9 @@ export default function TagInput({ selectedTags, setSelectedTags }: TagInputProp
     const newAutocomplete = new Set<Tag>();
     const escaped = query.toLowerCase().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     if (query.length != 0) {
-      tags.forEach((tag) => {
-        if (tag.name.match(new RegExp(`^${escaped}`, "i")) && !selectedTags.has(tag)) {
-          newAutocomplete.add(tag);
+      tags.forEach((color, tag) => {
+        if (tag.match(new RegExp(`^${escaped}`, "i")) && !selectedTags.has(tag)) {
+          newAutocomplete.add(new Tag(tag, color));
         }
       });
     }
@@ -31,7 +32,7 @@ export default function TagInput({ selectedTags, setSelectedTags }: TagInputProp
     setQuery(event.target.value.toLowerCase());
   };
 
-  const onAddTag = (tag: Tag) => {
+  const onAddTag = (tag: string) => {
     const newTags = new Set(selectedTags);
     newTags.add(tag);
     setSelectedTags(newTags);
@@ -41,7 +42,10 @@ export default function TagInput({ selectedTags, setSelectedTags }: TagInputProp
   };
 
   const onCreateTag = (name: string, color: string) => {
-    onAddTag(new Tag(name, color));
+    onAddTag(name);
+    const newTags = new Map(tags);
+    newTags.set(name, color);
+    setTags(newTags);
   };
 
   // if autocomplete, show tag
@@ -57,7 +61,12 @@ export default function TagInput({ selectedTags, setSelectedTags }: TagInputProp
           maxLength={30}
           onChange={onChange}
         />
-        <button className="placeholder-btn-tan m-auto px-2 rounded-full border-solid" onClick={() => setShowCreator(true)}>+</button>
+        <button
+          className="placeholder-btn-tan m-auto px-2 rounded-full border-solid"
+          onClick={() => setShowCreator(true)}
+        >
+          +
+        </button>
       </div>
       {showCreator && (
         <TagCreator text={query} onCreate={onCreateTag} onClose={() => setShowCreator(false)} />
@@ -65,7 +74,12 @@ export default function TagInput({ selectedTags, setSelectedTags }: TagInputProp
       {autocomplete.size != 0 && (
         <div className="absolute max-w-md bg-white border-light-gray border-2 flex flex-row shadow-md z-10 px-4 rounded-md overflow-x-scroll">
           {[...autocomplete].map((tag) => (
-            <Pill key={tag.name} text={tag.name} color={tag.color} onClick={() => onAddTag(tag)} />
+            <Pill
+              key={tag.name}
+              text={tag.name}
+              color={tag.color}
+              onClick={() => onAddTag(tag.name)}
+            />
           ))}
         </div>
       )}

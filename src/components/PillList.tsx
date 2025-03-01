@@ -1,12 +1,15 @@
+import { useContext } from "react";
 import { Pill } from ".";
-import { Tag } from "../models";
+import { RecipeContext } from "../app/contexts";
 
 type PillListProps = {
-  tags: Set<Tag>;
-  setTags?: (tags: Set<Tag>) => void;
+  tags: Set<string>;
+  setTags?: (tags: Set<string>) => void;
 };
 
 export default function PillList({ tags, setTags }: PillListProps) {
+  const allTags = useContext(RecipeContext).tags;
+
   return [...tags].map((tag) => {
     let onCancel;
     if (setTags) {
@@ -17,6 +20,6 @@ export default function PillList({ tags, setTags }: PillListProps) {
       };
     }
 
-    return (<Pill key={tag.name} text={tag.name} color={tag.color} onCancel={onCancel} />);
+    return <Pill key={tag} text={tag} color={allTags.get(tag)} onCancel={onCancel} />;
   });
 }

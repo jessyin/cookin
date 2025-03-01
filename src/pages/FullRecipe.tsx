@@ -61,16 +61,24 @@ export default function FullRecipe() {
         <div className="basis-1/2 flex flex-col content-end">
           <h1 className="text-stone-700">{recipe.name}!</h1>
           <div className="flex flex-row flex-wrap mb-8 -mt-2">
-            <p className="text-3xl my-auto mr-2 rotate-45">🏷️</p><PillList tags={recipe.tags} />
+            <p className="text-3xl my-auto mr-2 rotate-45">🏷️</p>
+            <PillList tags={recipe.tags} />
           </div>
-          <p className="pb-2"><b>Cooktime:</b> {recipe.cooktime} min</p>
+          <p className="pb-2">
+            <b>Cooktime:</b> {recipe.cooktime} min
+          </p>
           <div className="pb-8">
             <h2 className="border-b-2 border-b-green">
               Ingredients <EmojiCarousel type="ingredients" />
             </h2>
             <ul className="list-disc ps-4">
               {recipe.ingredients?.map((ingredient) => (
-                <li><b>{ingredient.measurement.quantity} {ingredient.measurement.unit || ""}</b> {ingredient.name.toLowerCase()}</li>
+                <li key={ingredient.name}>
+                  <b>
+                    {ingredient.measurement.quantity} {ingredient.measurement.unit || ""}
+                  </b>{" "}
+                  {ingredient.name.toLowerCase()}
+                </li>
               ))}
             </ul>
           </div>
@@ -79,13 +87,14 @@ export default function FullRecipe() {
               Instructions <EmojiCarousel type="utensils" />
             </h2>
             <ol className="list-decimal ps-4">
-              {recipe.directions?.map((step) => (
-                <li>{step}</li>
+              {recipe.directions?.map((step, i) => (
+                <li key={i}>{step}</li>
               ))}
             </ol>
           </div>
           <div className="text-blue-dark-2">
-            <b>Source:</b> <a href={recipe.source || "#"}>{recipe.source || "a family recipe :P"}</a>
+            <b>Source:</b>{" "}
+            <a href={recipe.source || "#"}>{recipe.source || "a family recipe :P"}</a>
           </div>
         </div>
       </div>

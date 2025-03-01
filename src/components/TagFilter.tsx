@@ -8,7 +8,9 @@ export default function TagFilter() {
   return (
     <div className="flex flex-col">
       <h2>Tags</h2>
-      <div className="flex flex-row flex-wrap"><PillList tags={tags}/></div>
+      <div className="flex flex-row flex-wrap">
+        <PillList tags={new Set(tags.keys())} />
+      </div>
     </div>
-  )
+  );
 }

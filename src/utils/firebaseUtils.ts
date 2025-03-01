@@ -15,35 +15,17 @@ import {
   DocumentReference,
   deleteDoc,
 } from "firebase/firestore";
-import { Ingredient, Recipe, RecipeMetadata, Tag } from "../models";
+import { Ingredient, Recipe, RecipeMetadata } from "../models";
 import { RecipeContext } from "../app/contexts";
 import { isIngredient } from "../models/Ingredient";
-import { isTag } from "../models/Tag";
 
 // Converters ---------
-function convertTagsToObjectArray(tags: Set<Tag>) {
-  const plainTags = new Array<Tag>();
-  tags.forEach((tag) => plainTags.push({ ...tag }));
-  return plainTags;
-}
-
 function convertIngredientsToObjectArray(ingredients: Array<Ingredient>) {
   const plainIngredients = new Array<Ingredient>();
   ingredients.forEach((ingredient) =>
     plainIngredients.push({ name: ingredient.name, measurement: { ...ingredient.measurement } })
   );
   return plainIngredients;
-}
-
-function convertObjectArrayToTags(objs: unknown[] | undefined | null) {
-  const tags = new Set<Tag>();
-  if (!objs) return tags;
-
-  objs.forEach((obj) => {
-    console.log(obj instanceof Tag);
-    if (isTag(obj) && obj.name != "") tags.add(new Tag(obj.name.toString(), obj.color));
-  });
-  return tags;
 }
 
 function convertObjectArrayToIngredients(objs: unknown[] | undefined | null) {
@@ -66,23 +48,32 @@ function convertObjectArrayToIngredients(objs: unknown[] | undefined | null) {
 
 const recipeConverter = {
   toFirestore: (recipe: Recipe) => ({
-      metadata: {
-        id: recipe.metadata?.id,
-        timestamp: recipe.metadata?.timestamp,
-      },
-      name: recipe.name,
-      tags: convertTagsToObjectArray(recipe.tags),
-      cooktime: recipe.cooktime,
-      ingredients: convertIngredientsToObjectArray(recipe.ingredients),
-      directions: recipe.directions,
-      image: recipe.image || "",
-      source: recipe.source || "",
+    metadata: {
+      id: recipe.metadata?.id,
+      timestamp: recipe.metadata?.timestamp,
+    },
+    name: recipe.name,
+    tags: [...recipe.tags],
+    cooktime: recipe.cooktime,
+    ingredients: convertIngredientsToObjectArray(recipe.ingredients),
+    directions: recipe.directions,
+    image: recipe.image || "",
+    source: recipe.source || "",
   }),
   fromFirestore: (snapshot: QueryDocumentSnapshot, options?: SnapshotOptions) => {
     const { name, tags, cooktime, ingredients, directions, metadata, image, source } =
       snapshot.data(options);
 
-    return new Recipe(metadata, name, convertObjectArrayToTags(tags), cooktime, convertObjectArrayToIngredients(ingredients), directions, image, source);
+    return new Recipe(
+      metadata,
+      name,
+      new Set(tags),
+      cooktime,
+      convertObjectArrayToIngredients(ingredients),
+      directions,
+      image,
+      source
+    );
   },
 };
 
@@ -93,15 +84,16 @@ const recipeContextConverter = {
   toFirestore: (recipeContext: RecipeContext) => {
     return {
       pantry: [...recipeContext.pantry],
-      tags: convertTagsToObjectArray(recipeContext.tags),
+      tags: Object.fromEntries(recipeContext.tags),
     };
   },
   fromFirestore: (snapshot: QueryDocumentSnapshot, options?: SnapshotOptions) => {
     const { pantry, tags } = snapshot.data(options);
-    return {
+
+    return <RecipeContext>{
       pantry: new Set<string>(pantry),
       setPantry: () => {},
-      tags: convertObjectArrayToTags(tags),
+      tags: new Map(Object.entries(tags)),
       setTags: () => {},
     };
   },
